@@ -7,7 +7,7 @@ class PingPongState {
       states: {
         // idle state
         idle: {
-          onEntry: '_enqueuePing',
+          onEntry: '_reset',
           on: {
             pingReady: 'sendingPing',
             pingReceived: 'sendingPong',
@@ -51,7 +51,7 @@ class PingPongState {
     });
 
     this.state = this.stateMachine.initialState;
-    this._enqueuePing();
+    this._reset();
   }
 
   event(e) {
@@ -64,36 +64,44 @@ class PingPongState {
     }
   }
 
-  pingReceived() {
+  receivePing() {
     console.log('<-- ping');
     this.event('pingReceived');
   }
 
-  pongReceived() {
+  receivePong() {
     console.log('<-- pong');
     this.event('pongReceived');
+  }
+
+  disconnect() {
+    console.log('DISCONNECTED');
   }
 
   _sendPing() {
     console.log('ping -->');
     this.event('pingSent');
-    this._constructPingTimeout();
-    setTimeout(() => this.pongReceived(), 1000);
+    this.pongTimeout = setTimeout(() => this.disconnect(), 2000);
+    setTimeout(() => this.receivePong(), 1000); // simulate a pong reply
   }
 
   _sendPong() {
-    clearTimeout(this.pongTimeout);
     console.log('pong -->');
     this.event('pongSent');
   }
 
-  _enqueuePing() {
-    clearTimeout(this.nextPing);
-    this.nextPing = setTimeout(() => this.event('pingReady'), 5000);
+  _reset() {
+    this._clearPongTimeout();
+    this._queuePing();
   }
 
-  _constructPingTimeout() {
-    this.pongTimeout = setTimeout(() => this.event('pongTimedOut'), 2000);
+  _clearPongTimeout() {
+    clearTimeout(this.pongTimeout);
+  }
+
+  _queuePing() {
+    clearTimeout(this.nextPing);
+    this.nextPing = setTimeout(() => this.event('pingReady'), 5000);
   }
 }
 

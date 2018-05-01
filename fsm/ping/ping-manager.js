@@ -20,19 +20,19 @@ class PingManager {
     console.log('DISCONNECTED');
   }
 
-  _reset() {
-    this._clearPongTimeout();
-    this._queuePing();
-  }
-
   _sendPong() {
     console.log('pong -->');
   }
 
   _sendPing() {
     console.log('ping -->');
-    setTimeout(() => this.receivePong(), 1000);
     this.pongTimeout = setTimeout(() => this.disconnect(), 2000);
+    setTimeout(() => this.receivePong(), 1000); // simulate a pong reply
+  }
+
+  _reset() {
+    this._clearPongTimeout();
+    this._queuePing();
   }
 
   _clearPongTimeout() {
