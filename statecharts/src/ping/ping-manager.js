@@ -28,7 +28,6 @@ class PingPongState {
           onEntry: '_sendPong',
           on: {
             pongSent: 'idle',
-            pingFlood: 'disconnect',
           },
         },
 
