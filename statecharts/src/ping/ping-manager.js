@@ -7,9 +7,9 @@ class PingPongState {
       states: {
         // idle state
         idle: {
-          onEntry: '_resetTimeout',
+          onEntry: '_enqueuePing',
           on: {
-            sendPing: 'sendingPing',
+            pingReady: 'sendingPing',
             pingReceived: 'sendingPong',
           },
         },
@@ -35,18 +35,8 @@ class PingPongState {
         // sending awaiting pong
         awaitingPong: {
           on: {
-            pongReceived: 'processingPong',
+            pongReceived: 'idle',
             pongTimedOut: 'disconnect',
-            pingReceived: 'sendingPong',
-          },
-        },
-
-        // processing ping
-        processingPong: {
-          onEntry: '_processPong',
-          on: {
-            pongValidated: 'idle',
-            pongInvalidated: 'disconnect',
             pingReceived: 'sendingPong',
           },
         },
@@ -61,7 +51,7 @@ class PingPongState {
     });
 
     this.state = this.stateMachine.initialState;
-    this._resetTimeout();
+    this._enqueuePing();
   }
 
   event(e) {
@@ -97,14 +87,9 @@ class PingPongState {
     this.event('pongSent');
   }
 
-  _processPong() {
-    clearTimeout(this.pongTimeout);
-    this.event('pongValidated');
-  }
-
-  _resetTimeout() {
+  _enqueuePing() {
     clearTimeout(this.nextPing);
-    this.nextPing = setTimeout(() => this.event('sendPing'), 5000);
+    this.nextPing = setTimeout(() => this.event('pingReady'), 5000);
   }
 
   _constructPingTimeout() {
