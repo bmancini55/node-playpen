@@ -9,7 +9,6 @@ class PingPongState {
         idle: {
           onEntry: '_resetTimeout',
           on: {
-            message: 'idle',
             messageTimeout: 'sendingPing',
             pingReceived: 'sendingPong',
           },
@@ -73,10 +72,6 @@ class PingPongState {
         this[action]();
       }
     }
-  }
-
-  receiveMessage() {
-    this.event('message');
   }
 
   pingReceived() {
