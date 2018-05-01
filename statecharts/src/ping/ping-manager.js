@@ -9,7 +9,7 @@ class PingPongState {
         idle: {
           onEntry: '_resetTimeout',
           on: {
-            messageTimeout: 'sendingPing',
+            sendPing: 'sendingPing',
             pingReceived: 'sendingPong',
           },
         },
@@ -92,23 +92,23 @@ class PingPongState {
   }
 
   _sendPong() {
-    clearTimeout(this.pingTimeout);
+    clearTimeout(this.pongTimeout);
     console.log('pong -->');
     this.event('pongSent');
   }
 
   _processPong() {
-    clearTimeout(this.pingTimeout);
+    clearTimeout(this.pongTimeout);
     this.event('pongValidated');
   }
 
   _resetTimeout() {
-    clearTimeout(this.messageTimeout);
-    this.messageTimeout = setTimeout(() => this.event('messageTimeout'), 5000);
+    clearTimeout(this.nextPing);
+    this.nextPing = setTimeout(() => this.event('sendPing'), 5000);
   }
 
   _constructPingTimeout() {
-    this.pingTimeout = setTimeout(() => this.event('pongTimedOut'), 2000);
+    this.pongTimeout = setTimeout(() => this.event('pongTimedOut'), 2000);
   }
 }
 
