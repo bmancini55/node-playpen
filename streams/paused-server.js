@@ -8,18 +8,23 @@ function wait(ms) {
   });
 }
 
-// construct a server
 let processed = 0;
 let server = new net.Server(socket => {
+  // listen for new data in paused mode
   socket.on('readable', async () => {
     try {
+      // read 100 bytes of data at a time
+      // stop reading when we have nothing left!
       let data;
-      do {
-        data = socket.read(100); // 100-bytes
+      while ((data = socket.read(100))) {
+        // do something with data...
+        // or just pause for 1ms to keep things slow
+        await wait(1);
+
+        // periodically write how much data we've processed
         processed += 100;
-        await wait(1); // keep is slow
-        if (processed % 100000 === 0) console.log(processed / 1000 + 'kb'); // log every 100kb
-      } while (data);
+        if (processed % 100000 === 0) console.log(processed / 1000 + 'kB'); // log every 100kB
+      }
     } catch (ex) {
       console.error(ex);
     }
