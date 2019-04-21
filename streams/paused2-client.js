@@ -11,7 +11,7 @@ async function run() {
   let run = true;
   while (run) {
     socket.write('hello');
-    await wait(5000);
+    await wait(7000);
   }
 }
 
