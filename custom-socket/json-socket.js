@@ -104,12 +104,12 @@ class JsonSocket extends Duplex {
         return;
       }
 
-      // Try to parse the data and if it fails, emit an error event
+      // Try to parse the data and if it fails destroy the socket.
       let json;
       try {
         json = JSON.parse(body);
       } catch (ex) {
-        this.emit('error', ex);
+        this.socket.destroy(ex);
         return;
       }
 
@@ -144,7 +144,7 @@ class JsonSocket extends Duplex {
     let buffer = Buffer.alloc(4 + jsonBytes);
     buffer.writeUInt32BE(jsonBytes);
     buffer.write(json, 4);
-    this._socket.write(buffer, encoding, cb);
+    this._socket.write(buffer, cb);
   }
 
   /**
