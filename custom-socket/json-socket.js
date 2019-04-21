@@ -3,12 +3,20 @@ const { Duplex } = require('stream');
 
 class JsonSocket extends Duplex {
   /**
-   Converts a standard Socket into a JsonSocket. Implements a Duplex
-   stream operating in object mode. Duck-type extension of a Socket.
+   JsonSocket implements a basic wire-protocol that encodes/decodes
+   JavaScripts objects as JSON strings over the wire. The wire protocol
+   is defined as:
+
+    4   len  - length of JSON body
+    len body - the JSON body encoded with minimal whitespacing
+
+   JsonSocket operates in object mode where calls to `read` and `write`
+   operate on JavaScript objects instead of Buffers.
+
    @param {Socket} socket
    */
   constructor(socket) {
-    super({ objectMode: true, readHighWaterMark: 2 });
+    super({ objectMode: true });
 
     /**
       True when read buffer is full and calls to `push` return false.
@@ -30,11 +38,26 @@ class JsonSocket extends Duplex {
     this._wrapSocket(socket);
   }
 
+  /**
+    Connect to a JsonSocket server.
+    @param {object} param
+    @param {string} [param.host] the host to connect to. Default is localhost
+    @param {number} param.port the port to connect to. Required.
+    @return {JsonSocket}
+   */
   connect({ host, port }) {
     this._wrapSocket(new Socket());
     this._socket.connect({ host, port });
+    return this;
   }
 
+  /**
+    Wraps a standard TCP Socket by binding to all events and either
+    rebroadcasting those events or performing custom functionality.
+
+    @private
+    @param {Socket} socket
+   */
   _wrapSocket(socket) {
     this._socket = socket;
     this._socket.on('close', hadError => this.emit('close', hadError));
@@ -45,10 +68,17 @@ class JsonSocket extends Duplex {
     this._socket.on('lookup', (err, address, family, host) => this.emit('lookup', err, address, family, host)); // prettier-ignore
     this._socket.on('ready', () => this.emit('ready'));
     this._socket.on('timeout', () => this.emit('timeout'));
-    this._socket.on('readable', this._onData.bind(this));
+    this._socket.on('readable', this._onReadable.bind(this));
   }
 
-  _onData() {
+  /**
+    Performs data read events which are triggered under two conditions:
+    1. underlying `readable` events emitted when there is new data
+       available on the socket
+    2. the consumer requested additional data
+    @private
+   */
+  _onReadable() {
     // Read all the data until one of two conditions is met
     // 1. there is nothing left to read on the socket
     // 2. reading is paused because the consumer is slow
@@ -93,11 +123,21 @@ class JsonSocket extends Duplex {
     }
   }
 
+  /**
+    Implements the readable stream method `_read`. This method will
+    flagged that reading is no longer paused since this method should
+    only be called by a consumer reading data.
+    @private
+   */
   _read() {
     this._readingPaused = false;
-    this._onData();
+    setImmediate(this._onReadable.bind(this));
   }
 
+  /**
+    Implements the writeable stream method `_write` by serializing
+    the object and pushing the data to the underlying socket.
+   */
   _write(obj, encoding, cb) {
     let json = JSON.stringify(obj);
     let jsonBytes = Buffer.byteLength(json);
@@ -107,6 +147,10 @@ class JsonSocket extends Duplex {
     this._socket.write(buffer, encoding, cb);
   }
 
+  /**
+    Implements the writeable stream method `_final` used when
+    .end() is called to write the final data to the stream.
+   */
   _final(cb) {
     this._socket.end(cb);
   }
