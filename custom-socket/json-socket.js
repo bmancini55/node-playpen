@@ -35,7 +35,7 @@ class JsonSocket extends Duplex {
     this._socket;
 
     // wrap the socket
-    this._wrapSocket(socket);
+    if (socket) this._wrapSocket(socket);
   }
 
   /**
@@ -92,6 +92,12 @@ class JsonSocket extends Duplex {
       // into a number by reading the UInt32BE value
       // from the buffer.
       let len = lenBuf.readUInt32BE();
+
+      // ensure that we don't exceed the max size of 256KiB
+      if (len > 2 ** 18) {
+        this.socket.destroy(new Error('Max length exceeded'));
+        return;
+      }
 
       // With the length, we can then consume the rest of the body.
       let body = this._socket.read(len);
