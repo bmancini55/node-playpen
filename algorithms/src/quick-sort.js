@@ -30,7 +30,8 @@ function quickSort(a, choosePivot = choosePivotMedian) {
 }
 
 /**
- *
+ * Recursive call to quick sort algorithm. This does the actual
+ * work and the above function does the setup to start the recursion.
  * @param {number[]} a values
  * @param {number} l left most index of sub-problem
  * @param {number} r right most index of sub-problem
