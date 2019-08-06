@@ -1,2 +1,3 @@
-*.txt
+/*.txt
 /test.js
+/test*.js
