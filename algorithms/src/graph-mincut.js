@@ -3,12 +3,16 @@ const { Graph } = require('./graph-adjacency-list-oop');
 exports.mincut = mincut;
 
 /**
+ * Randomized algorithm for finding the minimum cut needed to partition
+ * a node from the graph.
  *
+ * This algorithm only has a small probability of finding the correct answer 1/n^2.
+ * and has an O(n^2*m) which is also slow.
  * @param {Graph} g
  */
 function mincut(g) {
 	while (g.vertices.length > 2) {
-		let i = selectRandom(g.edges.length);
+		let i = selectRandom(g.vertices.length);
 		let e = g.edges[i];
 
 		let v1 = e.vertex1;
