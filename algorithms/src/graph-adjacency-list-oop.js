@@ -1,6 +1,10 @@
 // @ts-check
 
 class Graph {
+	/**
+	 * Graph represented with an adjacency list where using and vertex and
+	 * edge objects.
+	 */
 	constructor() {
 		/**
 		 * @type {Vertex[]}

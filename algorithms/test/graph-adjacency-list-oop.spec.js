@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 
-const { Graph } = require('../src/graph');
+const { Graph } = require('../src/graph-adjacency-list-oop');
 
-describe('Graph', () => {
+describe('Graph - Adjacency List OOP', () => {
 	it('should add a vertex', () => {
 		let g = new Graph();
 		g.addVertex(1);

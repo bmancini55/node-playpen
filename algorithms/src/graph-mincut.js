@@ -1,4 +1,4 @@
-const { Graph } = require('./graph');
+const { Graph } = require('./graph-adjacency-list-oop');
 
 exports.mincut = mincut;
 

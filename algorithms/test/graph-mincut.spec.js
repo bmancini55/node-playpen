@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { mincut } = require('../src/graph-mincut');
-const { Graph } = require('../src/graph');
+const { Graph } = require('../src/graph-adjacency-list-oop');
 
 describe('.mincut', () => {
 	it('should cut single', () => {
