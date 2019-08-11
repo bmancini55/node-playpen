@@ -1,6 +1,7 @@
 class Graph {
 	/**
-	 * Constructs a directed graph using an adjacency list.
+	 * Constructs a directed graph using an adjacency list with maps for
+	 * fast node and edge lookup.
 	 */
 	constructor() {
 		/** @type {Map<string, string>} */
