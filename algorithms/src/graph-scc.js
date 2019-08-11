@@ -1,5 +1,25 @@
 // @ts-check
 
+/**
+ * Kosaraju's Strongly Connected Component algorithm
+ * @param {Graph} g
+ * @returns {Map<string, string>} map of each node and its leader
+ */
+function kosaraju(g) {
+	// step 1: reverse the graph
+	let gr = reverseGraph(g);
+
+	// step 2: determine the finishing order
+	let finishOrder = findFinishingOrder(gr);
+
+	// step 3: find the leaders
+	let scc = findLeaders(g, finishOrder);
+
+	return scc;
+}
+
+///////////////////////////////////////////////////////////////
+
 class Graph {
 	/**
 	 * Constructs a directed graph using an adjacency list.
@@ -13,7 +33,7 @@ class Graph {
 	}
 
 	/**
-	 *
+	 * Adds a node to the list in O(1)
 	 * @param {string} val
 	 */
 	addNode(val) {
@@ -22,7 +42,7 @@ class Graph {
 	}
 
 	/**
-	 * Adds a directed edge
+	 * Adds a directed edge to the list in O(1)
 	 * @param {string} tail
 	 * @param {string} head
 	 */
@@ -40,7 +60,7 @@ class Graph {
 	}
 
 	/**
-	 * Gets the nodes
+	 * Gets all nodes
 	 * @returns {string[]}
 	 */
 	getNodes() {
@@ -79,29 +99,46 @@ function reverseGraph(g) {
 }
 
 /**
+ * Finds the finishing order by tranversing the graph using recursive DFS.
+ * This operation is subject maximum stack overflows on large graphs that
+ * may result in a large number of DFS calls.
+ *
+ * Recursive DFS is used because we want to mark a node as complete once
+ * all of it's adjacent nodes have been visited. This is difficult with a
+ * stack based DFS traversal or I may just be implementing it wrong.
+ *
+ * With recursive, we know that a sub-branch is completed when the DFS
+ * call stack returns.
  *
  * @param {Graph} g
- * @param {string[]} [startOrder]
  * @returns {string[]}
  */
-function findFinishingOrder(g, startOrder) {
-	/** @type {Set<string>} */
+function findFinishingOrder(g) {
+	/**
+	 * Keeps track of explored nodes
+	 * @type {Set<string>}
+	 */
 	let explored = new Set();
 
-	/** @type {string[]} */
+	/**
+	 * List of nodes as the finish
+	 * @type {string[]}
+	 */
 	let finish = [];
 
-	if (!startOrder) {
-		startOrder = Array.from(g.nodes.keys());
-	}
+	// create the initial order arbitrarily based on the node supplied
+	let order = Array.from(g.nodes.keys());
 
-	for (let i of startOrder.slice().reverse()) {
+	// DFS loop in reverse order
+	// if a node has not been explorered call DFS on it
+	for (let i of order.reverse()) {
 		if (!explored.has(i)) {
 			dfs(g, i);
 		}
 	}
 
 	/**
+	 * Recursive DFS
 	 * @param {Graph} g
 	 * @param {string} i
 	 */
@@ -113,6 +150,8 @@ function findFinishingOrder(g, startOrder) {
 				dfs(g, j);
 			}
 		}
+		// finish will be naturally ordered, meaning nodes will
+		// be pushed in the order that they complete their DFS recursion
 		finish.push(i);
 	}
 
@@ -120,19 +159,50 @@ function findFinishingOrder(g, startOrder) {
 }
 
 /**
+ * Given a specific ordering, find the leader or the "root" node
+ * that was used for the initiation of the DFS.
+ *
+ * We use a specific order so that we do not accidentally crawl the
+ * entire graph. In paricular, we go in reverse order of the finishing
+ * times for a crawl of the reverse graph.
+ *
+ * The reverse graph maintains the same SCCs as the normal graph. But
+ * by going in reverse, the first nodes to finish are ones that can crawl
+ * the most graph. The last nodes to finish are closer to sinks.
+ *
+ * Meaning, in the next step when we build leaders, if we crawl in
+ * reverse of the finishing order, we are guaranteed to not mix SCCs.
+ *
+ * This method uses recursive DFS, though it could just as easily use
+ * a stack based DFS. With a stack-based DFS, each iteration.
+ *
  *
  * @param {Graph} g
  * @param {string[]} order
  * @returns {Map<string, string>}
  */
 function findLeaders(g, order) {
-	/** @type {Set<string>} */
+	/**
+	 * Explored nodes
+	 * @type {Set<string>}
+	 */
 	let explored = new Set();
 
-	/** @type {Map<string, string>} */
+	/**
+	 * Leader for each node
+	 * @type {Map<string, string>}
+	 */
 	let leader = new Map();
 
+	/**
+	 * Current leader
+	 * @type {string}
+	 */
 	let s = null;
+
+	/**
+	 * Loop DFS in reverse order of the order supplied
+	 */
 	for (let i of order.slice().reverse()) {
 		if (!explored.has(i)) {
 			s = i;
@@ -141,6 +211,7 @@ function findLeaders(g, order) {
 	}
 
 	/**
+	 * Recursive DFS
 	 * @param {Graph} g
 	 * @param {string} i
 	 */
@@ -156,13 +227,6 @@ function findLeaders(g, order) {
 	}
 
 	return leader;
-}
-
-function kosaraju(g) {
-	let gr = reverseGraph(g);
-	let finishOrder = findFinishingOrder(gr);
-	let scc = findLeaders(g, finishOrder);
-	return scc;
 }
 
 exports.Graph = Graph;
