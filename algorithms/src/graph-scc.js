@@ -81,7 +81,7 @@ function reverseGraph(g) {
 /**
  *
  * @param {Graph} g
- * @param {string[]} order
+ * @param {string[]} [order]
  * @returns {string[]}
  */
 function dfsLoop1(g, order) {
@@ -90,6 +90,12 @@ function dfsLoop1(g, order) {
 
 	/** @type {string[]} */
 	let finish = [];
+
+	let stackSize = 0;
+
+	if (!order) {
+		order = Array.from(g.nodes.keys());
+	}
 
 	for (let i of order.slice().reverse()) {
 		if (!explored.has(i)) {
@@ -102,6 +108,7 @@ function dfsLoop1(g, order) {
 	 * @param {string} i
 	 */
 	function dfs(g, i) {
+		console.log('stack', ++stackSize);
 		explored.add(i);
 		let edges = g.getEdges(i);
 		for (let j of edges) {
@@ -156,9 +163,8 @@ function dfsLoop2(g, order) {
 
 function kosaraju(g) {
 	let gr = reverseGraph(g);
-	let finishes = dfsLoop1(gr);
-	reorderGraph(g, finishes);
-	let scc = dfsLoop2(g);
+	let finishOrder = dfsLoop1(gr);
+	let scc = dfsLoop2(g, finishOrder);
 	return scc;
 }
 
