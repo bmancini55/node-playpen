@@ -5,16 +5,16 @@ class Graph {
 	 * Constructs a directed graph using an adjacency list.
 	 */
 	constructor() {
-		/** @type {Map<number, number>} */
+		/** @type {Map<string, string>} */
 		this.nodes = new Map();
 
-		/** @type {Map<number, []>} */
+		/** @type {Map<string, []>} */
 		this.edges = new Map();
 	}
 
 	/**
 	 *
-	 * @param {number} val
+	 * @param {string} val
 	 */
 	addNode(val) {
 		this.nodes.set(val, val);
@@ -23,8 +23,8 @@ class Graph {
 
 	/**
 	 * Adds a directed edge
-	 * @param {number} tail
-	 * @param {number} head
+	 * @param {string} tail
+	 * @param {string} head
 	 */
 	addEdge(tail, head) {
 		let edges = this.getEdges(tail);
@@ -33,7 +33,7 @@ class Graph {
 
 	/**
 	 * Gets a node by the value specified
-	 * @param {number} val
+	 * @param {string} val
 	 */
 	getNode(val) {
 		return this.nodes.get(val);
@@ -41,7 +41,7 @@ class Graph {
 
 	/**
 	 * Gets the nodes
-	 * @returns {number[]}
+	 * @returns {string[]}
 	 */
 	getNodes() {
 		return Array.from(this.nodes.values());
@@ -49,8 +49,8 @@ class Graph {
 
 	/**
 	 * Gets the outbound edges for a node
-	 * @param {number} val
-	 * @returns {number[]}
+	 * @param {string} val
+	 * @returns {string[]}
 	 */
 	getEdges(val) {
 		return this.edges.get(val);
@@ -81,11 +81,16 @@ function reverseGraph(g) {
 /**
  *
  * @param {Graph} g
+ * @param {string[]} order
+ * @returns {string[]}
  */
 function dfsLoop1(g, order) {
+	/** @type {Set<string>} */
 	let explored = new Set();
-	let finish = new Map();
-	let t = 0;
+
+	/** @type {string[]} */
+	let finish = [];
+
 	for (let i of order.slice().reverse()) {
 		if (!explored.has(i)) {
 			dfs(g, i);
@@ -94,7 +99,7 @@ function dfsLoop1(g, order) {
 
 	/**
 	 * @param {Graph} g
-	 * @param {number} i
+	 * @param {string} i
 	 */
 	function dfs(g, i) {
 		explored.add(i);
@@ -104,29 +109,28 @@ function dfsLoop1(g, order) {
 				dfs(g, j);
 			}
 		}
-		t++;
-		finish.set(i, t);
+		finish.push(i);
 	}
 
-	let results = [];
-	for (let i of order) {
-		results.push(finish.get(i));
-	}
-
-	return results;
+	return finish;
 }
 
 /**
  *
  * @param {Graph} g
+ * @param {string[]} order
+ * @returns {Map<string, string>}
  */
-function dfsLoop2(g) {
-	let explored = [];
-	let leader = [];
+function dfsLoop2(g, order) {
+	/** @type {Set<string>} */
+	let explored = new Set();
+
+	/** @type {Map<string, string>} */
+	let leader = new Map();
+
 	let s = null;
-	for (let idx = g.nodes.length - 1; idx >= 0; idx--) {
-		let i = g.nodes[idx];
-		if (!explored[idx]) {
+	for (let i of order.slice().reverse()) {
+		if (!explored.has(i)) {
 			s = i;
 			dfs(g, i);
 		}
@@ -134,15 +138,14 @@ function dfsLoop2(g) {
 
 	/**
 	 * @param {Graph} g
-	 * @param {number} i
+	 * @param {string} i
 	 */
 	function dfs(g, i) {
-		let idx = g.__indexOf(i);
-		explored[idx] = true;
-		leader[idx] = s;
-		for (let j of g.edges[idx]) {
-			let idxj = g.__indexOf(j);
-			if (!explored[idxj]) {
+		explored.add(i);
+		leader.set(i, s);
+		let edges = g.getEdges(i);
+		for (let j of edges) {
+			if (!explored.has(j)) {
 				dfs(g, j);
 			}
 		}
