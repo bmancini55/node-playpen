@@ -131,7 +131,7 @@ function findFinishingOrder(g) {
 
 	// DFS loop in reverse order
 	// if a node has not been explorered call DFS on it
-	for (let i of order.reverse()) {
+	for (let i of order) {
 		if (!explored.has(i)) {
 			dfs(g, i);
 		}

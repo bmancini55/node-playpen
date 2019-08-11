@@ -73,7 +73,7 @@ describe('strongly connected components', () => {
 			g.addEdge('8', '2');
 			g.addEdge('9', '6');
 			let result = findFinishingOrder(g); // prettier-ignore
-			expect(result).to.deep.equal(['3', '5', '2', '8', '6', '9', '1', '4', '7']); // prettier-ignore
+			expect(result).to.deep.equal(['4', '3', '5', '2', '8', '6', '9', '7', '1']); // prettier-ignore
 		});
 	});
 
@@ -143,9 +143,9 @@ describe('strongly connected components', () => {
 			let result = kosaraju(g);
 			expect(result).to.deep.equal(
 				new Map([
-					['7', '7'],
-					['1', '7'],
-					['4', '7'],
+					['1', '1'],
+					['4', '1'],
+					['7', '1'],
 					['9', '9'],
 					['3', '9'],
 					['6', '9'],
