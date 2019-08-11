@@ -81,23 +81,21 @@ function reverseGraph(g) {
 /**
  *
  * @param {Graph} g
- * @param {string[]} [order]
+ * @param {string[]} [startOrder]
  * @returns {string[]}
  */
-function dfsLoop1(g, order) {
+function findFinishingOrder(g, startOrder) {
 	/** @type {Set<string>} */
 	let explored = new Set();
 
 	/** @type {string[]} */
 	let finish = [];
 
-	let stackSize = 0;
-
-	if (!order) {
-		order = Array.from(g.nodes.keys());
+	if (!startOrder) {
+		startOrder = Array.from(g.nodes.keys());
 	}
 
-	for (let i of order.slice().reverse()) {
+	for (let i of startOrder.slice().reverse()) {
 		if (!explored.has(i)) {
 			dfs(g, i);
 		}
@@ -108,7 +106,6 @@ function dfsLoop1(g, order) {
 	 * @param {string} i
 	 */
 	function dfs(g, i) {
-		console.log('stack', ++stackSize);
 		explored.add(i);
 		let edges = g.getEdges(i);
 		for (let j of edges) {
@@ -128,7 +125,7 @@ function dfsLoop1(g, order) {
  * @param {string[]} order
  * @returns {Map<string, string>}
  */
-function dfsLoop2(g, order) {
+function findLeaders(g, order) {
 	/** @type {Set<string>} */
 	let explored = new Set();
 
@@ -163,13 +160,13 @@ function dfsLoop2(g, order) {
 
 function kosaraju(g) {
 	let gr = reverseGraph(g);
-	let finishOrder = dfsLoop1(gr);
-	let scc = dfsLoop2(g, finishOrder);
+	let finishOrder = findFinishingOrder(gr);
+	let scc = findLeaders(g, finishOrder);
 	return scc;
 }
 
 exports.Graph = Graph;
 exports.reverseGraph = reverseGraph;
-exports.dfsLoop1 = dfsLoop1;
-exports.dfsLoop2 = dfsLoop2;
+exports.findFinishingOrder = findFinishingOrder;
+exports.findLeaders = findLeaders;
 exports.kosaraju = kosaraju;

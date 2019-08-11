@@ -1,9 +1,8 @@
 const { expect } = require('chai');
 const { Graph } = require('../src/graph-scc');
 const { reverseGraph } = require('../src/graph-scc');
-const { dfsLoop1 } = require('../src/graph-scc');
-const { dfsLoop2 } = require('../src/graph-scc');
-const { reorderGraph } = require('../src/graph-scc');
+const { findFinishingOrder } = require('../src/graph-scc');
+const { findLeaders } = require('../src/graph-scc');
 const { kosaraju } = require('../src/graph-scc');
 
 describe('strongly connected components', () => {
@@ -50,7 +49,7 @@ describe('strongly connected components', () => {
 		});
 	});
 
-	describe('dfsLoop1', () => {
+	describe('findFinishingOrder', () => {
 		it('should return the finishes correctly', () => {
 			let g = new Graph();
 			g.addNode('1');
@@ -73,12 +72,12 @@ describe('strongly connected components', () => {
 			g.addEdge('7', '9');
 			g.addEdge('8', '2');
 			g.addEdge('9', '6');
-			let result = dfsLoop1(g); // prettier-ignore
+			let result = findFinishingOrder(g); // prettier-ignore
 			expect(result).to.deep.equal(['3', '5', '2', '8', '6', '9', '1', '4', '7']); // prettier-ignore
 		});
 	});
 
-	describe('dfsLoop2', () => {
+	describe('findLeaders', () => {
 		it('should return the leaders', () => {
 			let g = new Graph();
 			g.addNode('1');
@@ -101,7 +100,7 @@ describe('strongly connected components', () => {
 			g.addEdge('9', '7');
 			g.addEdge('2', '8');
 			g.addEdge('6', '9');
-			let result = dfsLoop2(g, ['3', '5', '2', '8', '6', '9', '1', '4', '7']); // prettier-ignore
+			let result = findLeaders(g, ['3', '5', '2', '8', '6', '9', '1', '4', '7']); // prettier-ignore
 			expect(result).to.deep.equal(
 				new Map([
 					['7', '7'],
