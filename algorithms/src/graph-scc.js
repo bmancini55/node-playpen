@@ -5,10 +5,11 @@ class Graph {
 	 * Constructs a directed graph using an adjacency list.
 	 */
 	constructor() {
-		/** @type {number[]} */
-		this.nodes = [];
-		/** @type {number[][]} */
-		this.edges = [];
+		/** @type {Map<number, number>} */
+		this.nodes = new Map();
+
+		/** @type {Map<number, []>} */
+		this.edges = new Map();
 	}
 
 	/**
@@ -16,8 +17,8 @@ class Graph {
 	 * @param {number} val
 	 */
 	addNode(val) {
-		this.nodes.push(val);
-		this.edges.push([]);
+		this.nodes.set(val, val);
+		this.edges.set(val, []);
 	}
 
 	/**
@@ -26,18 +27,33 @@ class Graph {
 	 * @param {number} head
 	 */
 	addEdge(tail, head) {
-		let idx = this.indexOf(tail);
-		if (idx > -1) {
-			this.edges[idx].push(head);
-		}
+		let edges = this.getEdges(tail);
+		edges.push(head);
 	}
 
 	/**
-	 * Finds the index of the value
+	 * Gets a node by the value specified
 	 * @param {number} val
 	 */
-	indexOf(val) {
-		return this.nodes.indexOf(val);
+	getNode(val) {
+		return this.nodes.get(val);
+	}
+
+	/**
+	 * Gets the nodes
+	 * @returns {number[]}
+	 */
+	getNodes() {
+		return Array.from(this.nodes.values());
+	}
+
+	/**
+	 * Gets the outbound edges for a node
+	 * @param {number} val
+	 * @returns {number[]}
+	 */
+	getEdges(val) {
+		return this.edges.get(val);
 	}
 }
 
@@ -49,12 +65,14 @@ class Graph {
  */
 function reverseGraph(g) {
 	let g2 = new Graph();
-	for (let node of g.nodes) {
+	let nodes = g.getNodes();
+	for (let node of nodes) {
 		g2.addNode(node);
 	}
-	for (let i = 0; i < g.edges.length; i++) {
-		for (let edge of g.edges[i]) {
-			g2.addEdge(edge, g.nodes[i]);
+	for (let node of nodes) {
+		let edges = g.getEdges(node);
+		for (let edge of edges) {
+			g2.addEdge(edge, node);
 		}
 	}
 	return g2;
@@ -64,13 +82,12 @@ function reverseGraph(g) {
  *
  * @param {Graph} g
  */
-function dfsLoop1(g) {
-	let explored = [];
-	let finish = [];
+function dfsLoop1(g, order) {
+	let explored = new Set();
+	let finish = new Map();
 	let t = 0;
-	for (let idx = g.nodes.length - 1; idx >= 0; idx--) {
-		let i = g.nodes[idx];
-		if (!explored[idx]) {
+	for (let i of order.slice().reverse()) {
+		if (!explored.has(i)) {
 			dfs(g, i);
 		}
 	}
@@ -80,19 +97,23 @@ function dfsLoop1(g) {
 	 * @param {number} i
 	 */
 	function dfs(g, i) {
-		let idx = g.indexOf(i);
-		explored[idx] = true;
-		for (let j of g.edges[idx]) {
-			let idxj = g.indexOf(j);
-			if (!explored[idxj]) {
+		explored.add(i);
+		let edges = g.getEdges(i);
+		for (let j of edges) {
+			if (!explored.has(j)) {
 				dfs(g, j);
 			}
 		}
 		t++;
-		finish[idx] = t;
+		finish.set(i, t);
 	}
 
-	return finish;
+	let results = [];
+	for (let i of order) {
+		results.push(finish.get(i));
+	}
+
+	return results;
 }
 
 /**
@@ -116,11 +137,11 @@ function dfsLoop2(g) {
 	 * @param {number} i
 	 */
 	function dfs(g, i) {
-		let idx = g.indexOf(i);
+		let idx = g.__indexOf(i);
 		explored[idx] = true;
 		leader[idx] = s;
 		for (let j of g.edges[idx]) {
-			let idxj = g.indexOf(j);
+			let idxj = g.__indexOf(j);
 			if (!explored[idxj]) {
 				dfs(g, j);
 			}
@@ -128,32 +149,6 @@ function dfsLoop2(g) {
 	}
 
 	return leader;
-}
-
-// 7, 3, 1, 8, 2, 5, 9, 4, 6
-function reorderGraph(g, order) {
-	for (let i = 0; i < order.length; i++) {
-		while (order[i] !== i + 1) {
-			let newIdx = order[i] - 1;
-			swapArray(order, i, newIdx);
-			swapGraph(g, i, newIdx);
-		}
-	}
-}
-
-function swapGraph(g, i, j) {
-	let tempNode = g.nodes[j];
-	let tempEdges = g.edges[j];
-	g.nodes[j] = g.nodes[i];
-	g.edges[j] = g.edges[i];
-	g.nodes[i] = tempNode;
-	g.edges[i] = tempEdges;
-}
-
-function swapArray(a, i, j) {
-	let t = a[j];
-	a[j] = a[i];
-	a[i] = t;
 }
 
 function kosaraju(g) {
@@ -168,5 +163,4 @@ exports.Graph = Graph;
 exports.reverseGraph = reverseGraph;
 exports.dfsLoop1 = dfsLoop1;
 exports.dfsLoop2 = dfsLoop2;
-exports.reorderGraph = reorderGraph;
 exports.kosaraju = kosaraju;
