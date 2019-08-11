@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const { Graph } = require('../src/graph-adjacency-list-array');
+const { Graph } = require('../src/graph-adj-list-array');
 
 describe('Graph - Adjacency List Array', () => {
 	it('should add a vertex', () => {
