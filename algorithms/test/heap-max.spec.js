@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { MaxHeap } = require('../src/max-heap');
+const { MaxHeap } = require('../src/heap-max');
 
 describe('MaxHeap', () => {
 	describe('.insert', () => {

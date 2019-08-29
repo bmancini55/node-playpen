@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { MinHeap } = require('../src/min-heap');
+const { MinHeap } = require('../src/heap-min');
 
 describe('MinHeap', () => {
 	describe('.insert', () => {
