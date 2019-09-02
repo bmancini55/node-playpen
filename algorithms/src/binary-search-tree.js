@@ -1,3 +1,5 @@
+// @ts-check
+
 module.exports.search = search;
 module.exports.insert = insert;
 module.exports.peekMin = peekMin;
@@ -35,6 +37,14 @@ class BstNode {
 	}
 }
 
+/**
+ * Searches the BST from the root looking for the specified key. Search
+ * executes in θ(height) which has average complexity of O(log n) and
+ * a worst case runtime of O(n).
+ *
+ * @param {BstNode} root
+ * @param {number} key
+ */
 function search(root, key) {
 	// if not found return null;
 	if (root === null) return null;
@@ -49,6 +59,15 @@ function search(root, key) {
 	return search(root.right, key);
 }
 
+/**
+ * Inserts a new node with a given key into the BST. Returns the
+ * original unchanged root of the BST. Run time executes in θ(height)
+ * and has an average complexity of O(log n) and a worst case runtime
+ * of O(n).
+ *
+ * @param {BstNode} root
+ * @param {number} key
+ */
 function insert(root, key) {
 	// when no node, return new root
 	if (!root) {
@@ -73,6 +92,14 @@ function insert(root, key) {
 	return root;
 }
 
+/**
+ * Finds the max value in the tree staring at the root.
+ * Exceutes in θ(height) which has average complexity of O(log n) and
+ * a worst case runtime of O(n).
+ *
+ * @param {BstNode} root
+ * @returns {BstNode}
+ */
 function peekMax(root) {
 	if (!root) return root;
 
@@ -82,6 +109,14 @@ function peekMax(root) {
 	return root;
 }
 
+/**
+ * Finds the min value in the tree staring at the root.
+ * Exceutes in θ(height) which has average complexity of O(log n) and
+ * a worst case runtime of O(n).
+ *
+ * @param {BstNode} root
+ * @returns {BstNode}
+ */
 function peekMin(root) {
 	if (!root) return root;
 
@@ -91,6 +126,15 @@ function peekMin(root) {
 	return root;
 }
 
+/**
+ * Finds the predecessor of the specified key
+ *
+ * Exceutes in θ(height) which has average complexity of O(log n) and
+ * a worst case runtime of O(n).
+ *
+ * @param {BstNode} root
+ * @returns {BstNode}
+ */
 function predecessor(root) {
 	if (!root) return root;
 
@@ -106,6 +150,15 @@ function predecessor(root) {
 	return parent;
 }
 
+/**
+ * Finds the predecessor of the specified key
+ *
+ * Exceutes in θ(height) which has average complexity of O(log n) and
+ * a worst case runtime of O(n).
+ *
+ * @param {BstNode} root
+ * @returns {BstNode}
+ */
 function successor(root) {
 	if (!root) return root;
 
@@ -124,7 +177,7 @@ function successor(root) {
  * Returns an array of all nodes in order of the key. Runtime of O(n).
  *
  * @param {BstNode} root
- * @return {BstNode}
+ * @return {BstNode[]}
  */
 function inorder(root) {
 	let order = [];
@@ -142,52 +195,56 @@ function inorder(root) {
 	return order;
 }
 
-function del(k) {
-	// k has no children, just delete it
-	if (!k.left && !k.right) {
-		removeLeaf(k);
-	} else if ((k.left && !k.right) || (!k.left && k.right)) {
-		// rewire child as parent
-		swapNodes(k, k.left || k.right);
-		removeLeaf(k);
-	} else {
-		// swap with predecessor
-		let p = predecessor(k);
-		swapNodes(k, p);
-		removeLeaf(k);
-		return p;
-	}
-}
+/**
+ * Searches for the node matching the key and then deletes it
+ * and returns the new root. Overage runtime of O(log n) and worst
+ * case run time of O(n)
+ *
+ * @param {BstNode} root
+ * @param {number} key
+ * @returns {BstNode} new root
+ */
+function del(root, key) {
+	if (!root) return root;
 
-function swapNodes(node1, node2) {
-	let p2 = node2.parent;
-	let l2 = node2.left;
-	let r2 = node2.right;
-
-	if (node1.parent) {
-		if (node1.parent.left === node1) node1.parent.left = node2;
-		if (node1.parent.right === node1) node1.parent.right = node2;
+	// search left
+	if (key < root.key) {
+		root.left = del(root.left, key);
+		if (root.left) root.left.parent = root;
 	}
 
-	if (node2.parent) {
-		if (node2.parent.left === node2) node2.parent.left = node1;
-		if (node2.parent.right === node2) node2.parent.right = node1;
+	// search right
+	else if (key > root.key) {
+		root.right = del(root.right, key);
+		if (root.right) root.right.parent = root;
 	}
 
-	node2.parent = node1.parent;
-	node2.left = node1.left;
-	node2.right = node1.right;
+	// otherwise
+	else {
+		// has zero or one child
+		if (root.left == null) {
+			let child = root.right;
+			root.parent = null;
+			root.left = null;
+			root.right = null;
+			return child;
+		} else if (root.right === null) {
+			let child = root.left;
+			root.parent = null;
+			root.left = null;
+			root.right = null;
+			return child;
+		}
 
-	node1.parent = p2;
-	node1.left = l2;
-	node1.right = r2;
-}
+		// has with two children, we need to find the predecessor
+		let node = predecessor(root);
 
-function removeLeaf(node) {
-	if (node.parent) {
-		if (node.parent.left === node) node.parent.left = null;
-		if (node.parent.right === node) node.parent.right = null;
-		node.parent = null;
+		// swap predecessor
+		root.key = node.key;
+
+		// delete the predecessor node
+		root.left = del(root.left, node.key);
 	}
-	return node;
+
+	return root;
 }
