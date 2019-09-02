@@ -3,6 +3,10 @@ const { insert } = require('../src/binary-search-tree');
 const { search } = require('../src/binary-search-tree');
 const { peekMin } = require('../src/binary-search-tree');
 const { peekMax } = require('../src/binary-search-tree');
+const { predecessor } = require('../src/binary-search-tree');
+const { successor } = require('../src/binary-search-tree');
+const { inorder } = require('../src/binary-search-tree');
+const { del } = require('../src/binary-search-tree');
 
 describe('binary search tree', () => {
 	describe('.insert', () => {
@@ -111,7 +115,11 @@ describe('binary search tree', () => {
 		});
 	});
 
-	describe('peakMin', () => {
+	describe('peekMin', () => {
+		it('should return null when empty', () => {
+			expect(peekMin(null)).to.be.null;
+		});
+
 		it('should find the min with right tree', () => {
 			let root = insert(null, 5);
 			insert(root, 6);
@@ -130,7 +138,11 @@ describe('binary search tree', () => {
 		});
 	});
 
-	describe('peakMax', () => {
+	describe('peekMax', () => {
+		it('should return null when empty', () => {
+			expect(peekMax(null)).to.be.null;
+		});
+
 		it('should find the max with left tree', () => {
 			let root = insert(null, 5);
 			insert(root, 4);
@@ -146,6 +158,132 @@ describe('binary search tree', () => {
 			insert(root, 6);
 			let result = peekMax(root);
 			expect(result.key).to.equal(6);
+		});
+	});
+
+	describe('predecessor', () => {
+		it('should return null when empty', () => {
+			expect(predecessor(null)).to.be.null;
+		});
+
+		it('should return left predecessor', () => {
+			let root = insert(null, 3);
+			insert(root, 2);
+			let result = predecessor(root);
+			expect(result.key).to.equal(2);
+		});
+
+		it('should return parent predecessor', () => {
+			let root = insert(null, 3);
+			insert(root, 4);
+			let result = predecessor(root.right);
+			expect(result.key).to.equal(3);
+		});
+
+		it('should return grand parent predecessor', () => {
+			let root = insert(null, 3);
+			insert(root, 5);
+			insert(root, 4);
+			let result = predecessor(root.right.left);
+			expect(result.key).to.equal(3);
+		});
+	});
+
+	describe('successor', () => {
+		it('should return null when empty', () => {
+			expect(successor(null)).to.be.null;
+		});
+
+		it('should return right successsor', () => {
+			let root = insert(null, 3);
+			insert(root, 4);
+			let result = successor(root);
+			expect(result.key).to.equal(4);
+		});
+
+		it('should return parent successor', () => {
+			let root = insert(null, 3);
+			insert(root, 2);
+			let result = successor(root.left);
+			expect(result.key).to.equal(3);
+		});
+
+		it('should return grand parent successor', () => {
+			let root = insert(null, 4);
+			insert(root, 2);
+			insert(root, 3);
+			let result = successor(root.left.right);
+			expect(result.key).to.equal(4);
+		});
+	});
+
+	describe('.inorder', () => {
+		it('null returns empty', () => {
+			let root = null;
+			let result = inorder(root);
+			expect(result).to.deep.equal([]);
+		});
+
+		it('returns single', () => {
+			let root = insert(null, 4);
+			let result = inorder(root);
+			result = result.map(p => p.key);
+			expect(result).to.deep.equal([4]);
+		});
+
+		it('should subtrees', () => {
+			let root = insert(null, 4);
+			insert(root, 2);
+			insert(root, 1);
+			insert(root, 3);
+			insert(root, 6);
+			insert(root, 5);
+			insert(root, 7);
+			let result = inorder(root);
+			result = result.map(p => p.key);
+			expect(result).to.deep.equal([1, 2, 3, 4, 5, 6, 7]);
+		});
+	});
+
+	describe('.delete', () => {
+		it('should delete single node', () => {
+			let root = insert(null, 4);
+			del(root);
+		});
+
+		it('should remove leaf', () => {
+			let root = insert(null, 4);
+			insert(root, 3);
+			del(root.left);
+			expect(root.left).to.be.null;
+		});
+
+		it('should remove left parent', () => {
+			let root = insert(null, 4);
+			insert(root, 3);
+			insert(root, 2);
+			del(root.left);
+			expect(root.left.key).to.equal(2);
+			expect(root.left.parent).to.equal(root);
+		});
+
+		it('should remove right parent', () => {
+			let root = insert(null, 4);
+			insert(root, 5);
+			insert(root, 6);
+			del(root.right);
+			expect(root.right.key).to.equal(6);
+			expect(root.right.parent).to.equal(root);
+		});
+
+		it('should replace with predecessor', () => {
+			let root = insert(null, 4);
+			insert(root, 2);
+			insert(root, 3);
+			insert(root, 5);
+			root = del(root);
+			expect(root.key).to.equal(3);
+			expect(root.parent).to.be.null;
 		});
 	});
 });
