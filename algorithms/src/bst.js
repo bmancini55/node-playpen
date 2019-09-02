@@ -9,6 +9,48 @@ module.exports.successor = successor;
 module.exports.inorder = inorder;
 module.exports.del = del;
 
+class Bst {
+	constructor() {
+		this.root;
+		this.size = 0;
+	}
+
+	insert(key) {
+		this.root = insert(this.root, key);
+		this.size += 1;
+	}
+
+	findMin() {
+		let node = peekMin(this.root);
+		return node && node.key;
+	}
+
+	findMax() {
+		let node = peekMax(this.root);
+		return node && node.key;
+	}
+
+	extractMin() {
+		let node = peekMin(this.root);
+		if (node) {
+			this.root = del(this.root, node.key);
+			this.size -= 1;
+		}
+		return node.key;
+	}
+
+	extractMax() {
+		let node = peekMax(this.root);
+		if (node) {
+			this.root = del(this.root, node.key);
+			this.size -= 1;
+		}
+		return node.key;
+	}
+}
+
+module.exports.Bst = Bst;
+
 class BstNode {
 	/**
 	 * Generic Binary Search Tree Node
@@ -36,6 +78,8 @@ class BstNode {
 		this.right = null;
 	}
 }
+
+module.exports.BstNode = BstNode;
 
 /**
  * Searches the BST from the root looking for the specified key. Search

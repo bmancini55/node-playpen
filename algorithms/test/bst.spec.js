@@ -1,12 +1,12 @@
 const { expect } = require('chai');
-const { insert } = require('../src/binary-search-tree');
-const { search } = require('../src/binary-search-tree');
-const { peekMin } = require('../src/binary-search-tree');
-const { peekMax } = require('../src/binary-search-tree');
-const { predecessor } = require('../src/binary-search-tree');
-const { successor } = require('../src/binary-search-tree');
-const { inorder } = require('../src/binary-search-tree');
-const { del } = require('../src/binary-search-tree');
+const { insert } = require('../src/bst');
+const { search } = require('../src/bst');
+const { peekMin } = require('../src/bst');
+const { peekMax } = require('../src/bst');
+const { predecessor } = require('../src/bst');
+const { successor } = require('../src/bst');
+const { inorder } = require('../src/bst');
+const { del } = require('../src/bst');
 
 describe('binary search tree', () => {
 	describe('.insert', () => {
