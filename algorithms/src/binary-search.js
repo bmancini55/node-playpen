@@ -48,7 +48,7 @@ function searchr(a, l, r, x) {
  * that is greather than or equal to the search value x.
  *
  * Returns 0 when entire array is above the value.
- * Returns PositiveInfinity when value is above entire array.
+ * Returns -1 when value is above entire array.
  *
  * @param {number[]} a sorted array
  * @param {number} l left index
@@ -57,8 +57,8 @@ function searchr(a, l, r, x) {
  * @returns {number} index of first value above the target
  */
 function lowerBound(a, l, r, x) {
-	// return Infinity when x is above array
-	if (x > a[a.length - 1]) return Number.POSITIVE_INFINITY;
+	// return -1 when x is above array
+	if (x > a[a.length - 1]) return -1;
 
 	// return first index when x is below array
 	if (x < a[0]) return 0;

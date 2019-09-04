@@ -136,12 +136,10 @@ describe('binary search', () => {
 			expect(lowerBound(a, 0, a.length, x)).to.equal(4);
 		});
 
-		it('should return PositiveInfinity when above the array', () => {
+		it('should return -1 when above the array', () => {
 			let a = [1, 4, 8, 12, 21];
 			let x = 22;
-			expect(lowerBound(a, 0, a.length, x)).to.equal(
-				Number.POSITIVE_INFINITY
-			);
+			expect(lowerBound(a, 0, a.length, x)).to.equal(-1);
 		});
 	});
 
