@@ -1,4 +1,5 @@
 module.exports.search = search;
+module.exports.searchr = searchr;
 module.exports.lowerBound = lowerBound;
 module.exports.upperBound = upperBound;
 
@@ -13,11 +14,31 @@ module.exports.upperBound = upperBound;
  * @returns {number} the index of the value in the array
  */
 function search(a, l, r, x) {
-	if (l <= r) {
+	while (l < r) {
 		let mid = l + Math.floor((r - l) / 2);
 		if (a[mid] === x) return mid;
-		if (a[mid] > x) return search(a, l, mid - 1, x);
-		if (a[mid] < x) return search(a, mid + 1, r, x);
+		if (a[mid] > x) r = mid;
+		if (a[mid] < x) l = mid + 1;
+	}
+	return -1;
+}
+
+/**
+ * Recursively finds the index of the target value in the array. Returns -1
+ * if the value is not found.
+ *
+ * @param {number[]} a sorted array
+ * @param {number} l left index
+ * @param {number} r right index
+ * @param {number} x target value
+ * @returns {number} the index of the value in the array
+ */
+function searchr(a, l, r, x) {
+	if (l < r) {
+		let mid = l + Math.floor((r - l) / 2);
+		if (a[mid] === x) return mid;
+		if (a[mid] > x) return searchr(a, l, mid, x);
+		if (a[mid] < x) return searchr(a, mid + 1, r, x);
 	}
 	return -1;
 }
