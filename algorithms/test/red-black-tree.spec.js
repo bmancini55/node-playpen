@@ -232,6 +232,9 @@ describe('red black tree', () => {
 		});
 
 		describe('case 2: black parent', () => {
+			//    2-b
+			//   /
+			//  1-r
 			it('colors it red', () => {
 				let p = new RBNode(2);
 				let n = new RBNode(1);
@@ -242,6 +245,11 @@ describe('red black tree', () => {
 		});
 
 		describe('case 3: parent and uncle are red', () => {
+			//        3-b               3-b
+			//       /   \             /   \
+			//     2-r   4-r  =>     2-b   4-b
+			//    /                 /
+			//   1-r               1-r
 			let g = new RBNode(3);
 			let p = new RBNode(2);
 			let u = new RBNode(4);
@@ -276,7 +284,7 @@ describe('red black tree', () => {
 		describe('case 4: left node outside grandparent', () => {
 			//         5-b               5-b
 			//        /  \              /   \
-			//  >   4-b   6-b   ->    3-b    6-b
+			//      4-b   6-b   =>    3-b    6-b
 			//     /                 /   \
 			//    3-r              2-r    4-r
 			//   /
@@ -334,8 +342,8 @@ describe('red black tree', () => {
 		describe('case 4: right node outside grandparent', () => {
 			//      5-b                   5-b
 			//     /   \                 /   \
-			//   4-b    6-b  <         4-b   7-b  <
-			//            \       ->        /   \
+			//   4-b    6-b            4-b   7-b
+			//            \      =>         /   \
 			//             7-r            6-r   8-r
 			//               \
 			//               8-r
@@ -392,7 +400,7 @@ describe('red black tree', () => {
 		describe('case 4: left node inside grandparent', () => {
 			//         5-b               5-b
 			//        /  \              /   \
-			//  >   4-b   6-b   ->    3-b    6-b
+			//      4-b   6-b   =>    3-b    6-b
 			//     /                 /   \
 			//    2-r              2-r    4-r
 			//       \
@@ -451,7 +459,7 @@ describe('red black tree', () => {
 			//      5-b                   5-b
 			//     /   \                 /   \
 			//   4-b    6-b            4-b   7-b
-			//            \      ->         /   \
+			//            \      =>         /   \
 			//             8-r            6-r   8-r
 			//            /
 			//          7-r

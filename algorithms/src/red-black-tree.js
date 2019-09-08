@@ -159,7 +159,7 @@ function insert(root, node) {
  *
  * @param {RBNode} root
  * @param {RBNode} n
- * @returns {RBNode}
+ * @returns {RBNode} new root
  */
 function recurInsert(root, n) {
 	if (!root) return n;
