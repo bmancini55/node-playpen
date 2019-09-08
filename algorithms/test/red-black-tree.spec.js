@@ -248,16 +248,260 @@ describe('red black tree', () => {
 			let n = new RBNode(1);
 
 			before(() => {
+				// eslint-disable-next-line no-unused-vars
 				let r = null;
 				r = insert(r, g);
 				r = insert(r, p);
 				r = insert(r, u);
 				r = insert(r, n);
-				console.log(r);
 			});
 
-			it('should color grandparent red', () => {
-				// expect(g.color).to.equal()
+			it('should color grandparent black recursively', () => {
+				expect(g.color).to.equal(Color.Black);
+			});
+
+			it('should color parent black', () => {
+				expect(p.color).to.equal(Color.Black);
+			});
+
+			it('should color uncle black', () => {
+				expect(u.color).to.equal(Color.Black);
+			});
+
+			it('should color node red', () => {
+				expect(n.color).to.equal(Color.Red);
+			});
+		});
+
+		describe('case 4: left node outside grandparent', () => {
+			//         5-b               5-b
+			//        /  \              /   \
+			//  >   4-b   6-b   ->    3-b    6-b
+			//     /                 /   \
+			//    3-r              2-r    4-r
+			//   /
+			//  2-r
+
+			let f = new RBNode(5);
+			let g = new RBNode(4);
+			let u = new RBNode(6);
+			let p = new RBNode(3);
+			let n = new RBNode(2);
+
+			it('should right rotate grandparent', () => {
+				// eslint-disable-next-line no-unused-vars
+				let r = null;
+				r = insert(r, f);
+				r = insert(r, g);
+				r = insert(r, u);
+				r = insert(r, p);
+				r = insert(r, n);
+			});
+
+			it('parent should be where grandparent was', () => {
+				expect(f.left).to.equal(p);
+			});
+
+			it('node should be left child of parent', () => {
+				expect(p.left).to.equal(n);
+			});
+
+			it('grandparent should be right child of parent', () => {
+				expect(p.right).to.equal(g);
+			});
+
+			it('root should be black', () => {
+				expect(f.color).to.equal(Color.Black);
+			});
+
+			it('grand uncle should be black', () => {
+				expect(u.color).to.equal(Color.Black);
+			});
+
+			it('parent should be black', () => {
+				expect(p.color).to.equal(Color.Black);
+			});
+
+			it('grandparent should be red', () => {
+				expect(g.color).to.equal(Color.Red);
+			});
+
+			it('node should be red', () => {
+				expect(n.color).to.equal(Color.Red);
+			});
+		});
+
+		describe('case 4: right node outside grandparent', () => {
+			//      5-b                   5-b
+			//     /   \                 /   \
+			//   4-b    6-b  <         4-b   7-b  <
+			//            \       ->        /   \
+			//             7-r            6-r   8-r
+			//               \
+			//               8-r
+
+			let f = new RBNode(5);
+			let g = new RBNode(6);
+			let u = new RBNode(4);
+			let p = new RBNode(7);
+			let n = new RBNode(8);
+
+			it('should left rotate grandparent', () => {
+				// eslint-disable-next-line no-unused-vars
+				let r = null;
+				r = insert(r, f);
+				r = insert(r, g);
+				r = insert(r, u);
+				r = insert(r, p);
+				r = insert(r, n);
+			});
+
+			it('parent should be where grandparent was', () => {
+				expect(f.right).to.equal(p);
+			});
+
+			it('grandparent should be left child of parent', () => {
+				expect(p.left).to.equal(g);
+			});
+
+			it('node should be right child of parent', () => {
+				expect(p.right).to.equal(n);
+			});
+
+			it('root should be colored black', () => {
+				expect(f.color).to.equal(Color.Black);
+			});
+
+			it('grand uncle should be black', () => {
+				expect(u.color).to.equal(Color.Black);
+			});
+
+			it('parent should be black', () => {
+				expect(p.color).to.equal(Color.Black);
+			});
+
+			it('grandparent should be red', () => {
+				expect(g.color).to.equal(Color.Red);
+			});
+
+			it('node should be red', () => {
+				expect(n.color).to.equal(Color.Red);
+			});
+		});
+
+		describe('case 4: left node inside grandparent', () => {
+			//         5-b               5-b
+			//        /  \              /   \
+			//  >   4-b   6-b   ->    3-b    6-b
+			//     /                 /   \
+			//    2-r              2-r    4-r
+			//       \
+			//        3-r
+
+			let f = new RBNode(5);
+			let g = new RBNode(4);
+			let u = new RBNode(6);
+			let p = new RBNode(2);
+			let n = new RBNode(3);
+
+			it('should left rotate parent, then right rotate grandparent', () => {
+				// eslint-disable-next-line no-unused-vars
+				let r = null;
+				r = insert(r, f);
+				r = insert(r, g);
+				r = insert(r, u);
+				r = insert(r, p);
+				r = insert(r, n);
+			});
+
+			it('node should be where grandparent was', () => {
+				expect(f.left).to.equal(n);
+			});
+
+			it('parent should be left child of node', () => {
+				expect(n.left).to.equal(p);
+			});
+
+			it('grandparent should be right child of node', () => {
+				expect(n.right).to.equal(g);
+			});
+
+			it('root should be black', () => {
+				expect(f.color).to.equal(Color.Black);
+			});
+
+			it('grand uncle should be black', () => {
+				expect(u.color).to.equal(Color.Black);
+			});
+
+			it('node should be black', () => {
+				expect(n.color).to.equal(Color.Black);
+			});
+
+			it('parent should be red', () => {
+				expect(p.color).to.equal(Color.Red);
+			});
+
+			it('grandparent should be red', () => {
+				expect(g.color).to.equal(Color.Red);
+			});
+		});
+
+		describe('case 4: right node inside grandparent', () => {
+			//      5-b                   5-b
+			//     /   \                 /   \
+			//   4-b    6-b            4-b   7-b
+			//            \      ->         /   \
+			//             8-r            6-r   8-r
+			//            /
+			//          7-r
+
+			let f = new RBNode(5);
+			let u = new RBNode(4);
+			let g = new RBNode(6);
+			let p = new RBNode(8);
+			let n = new RBNode(7);
+
+			it('should right rotate parent, then right rotate grandparent', () => {
+				// eslint-disable-next-line no-unused-vars
+				let r = null;
+				r = insert(r, f);
+				r = insert(r, g);
+				r = insert(r, u);
+				r = insert(r, p);
+				r = insert(r, n);
+			});
+
+			it('node should be where grandparent was', () => {
+				expect(f.right).to.equal(n);
+			});
+
+			it('grandparent should be left child of node', () => {
+				expect(n.left).to.equal(g);
+			});
+
+			it('parent should be right child of node', () => {
+				expect(n.right).to.equal(p);
+			});
+
+			it('root should be colored black', () => {
+				expect(f.color).to.equal(Color.Black);
+			});
+
+			it('grand uncle should be black', () => {
+				expect(u.color).to.equal(Color.Black);
+			});
+
+			it('node should be black', () => {
+				expect(n.color).to.equal(Color.Black);
+			});
+
+			it('grand parent should be red', () => {
+				expect(g.color).to.equal(Color.Red);
+			});
+
+			it('parent should be red', () => {
+				expect(p.color).to.equal(Color.Red);
 			});
 		});
 	});

@@ -8,7 +8,7 @@ const Color = {
 class RBNode {
 	constructor(key) {
 		this.key = key;
-		this.color = Color.Black;
+		this.color = Color.Red;
 		this.parent = null;
 		this.left = null;
 		this.right = null;
@@ -126,7 +126,7 @@ function rotateRight(x) {
 	// swap p's child from x to y
 	if (p) {
 		if (p.left === x) p.left = y;
-		if (p.right === x) p.rright = y;
+		if (p.right === x) p.right = y;
 	}
 
 	// move B to x's left
@@ -208,9 +208,9 @@ function repairInsert(n) {
 		repairInsert(g);
 	} else {
 		// case 4 - parent is red and uncle is black
-		// 	rotate into grand parent position
 
-		// rotate n out from under grandparent if needed
+		// case 4b
+		// rotate parent left, then grand parent right
 		if (n === p.right && p === g.left) {
 			rotateLeft(p);
 			n = n.left;
@@ -219,7 +219,8 @@ function repairInsert(n) {
 			n = n.right;
 		}
 
-		// rotate the grandparent
+		// case case 4a
+		// rotate grand parent right
 		p = getParent(n);
 		g = getGrandParent(n);
 		if (n === p.left) {
