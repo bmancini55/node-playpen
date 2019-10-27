@@ -19,56 +19,36 @@ function prim(g) {
 	// edges in the spanning tree
 	let T = new Set();
 
-	// P is the set of edges where v is in X and w is not in X
-	// initially this is all edges in s
-	let P = findPossibleEdges(g, X);
-
-	while (P.size) {
-		let min = findMinEdge(P);
+	while (X.size < g.vertices.size) {
+		let min = findMinEdge(g, X);
 		X.add(min.vertex1);
 		X.add(min.vertex2);
 		T.add(min);
-
-		// rebuild the list of possible edges
-		P = findPossibleEdges(g, X);
 	}
 
 	return Array.from(T);
 }
 
 /**
- * Searches through all edges to creat a set of edges
- * that have v in X and w not in X. This search occurs
- * in O(m) time, where m is the number of edges.
+ * Finds the mininum edge for all edges where v is in X
+ * and w is not in X. This operation runs in O(m) time
+ * where m is the number of edges.
  * @param {Graph} g
  * @param {Set<Vertex>} X
- * @returns {Set<Edge>}
+ * @returns {Edge}
  */
-function findPossibleEdges(g, X) {
-	let P = new Set();
-
+function findMinEdge(g, X) {
+	let minEdge = null;
 	for (let v of X) {
 		let edges = g.getEdges(v);
 		for (let edge of edges) {
 			let has1 = X.has(edge.vertex1);
 			let has2 = X.has(edge.vertex2);
-			if ((has1 && !has2) || (!has1 && has2)) P.add(edge);
-		}
-	}
-
-	return P;
-}
-
-/**
- * Finds the mininum edge out of a set of edges.
- * @param {Set<Edge>} edges
- * @returns {Edge}
- */
-function findMinEdge(edges) {
-	let minEdge = null;
-	for (let edge of edges) {
-		if (!minEdge || edge.weight < minEdge.weight) {
-			minEdge = edge;
+			if ((has1 && !has2) || (!has1 && has2)) {
+				if (!minEdge || edge.weight < minEdge.weight) {
+					minEdge = edge;
+				}
+			}
 		}
 	}
 	return minEdge;
