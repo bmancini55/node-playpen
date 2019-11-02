@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { UnionFind } = require('../src/union-find-lazy');
+const { UnionFind } = require('../src/union-find-weighted');
 
 describe('union-find', () => {
 	it('should merge 1 and 2', () => {
@@ -42,7 +42,7 @@ describe('union-find', () => {
 		expect(sut.find(9)).to.equal(9);
 	});
 
-	it('does not merge smaller tree', () => {
+	it('should merge smaller tree', () => {
 		let sut = new UnionFind(10);
 		sut.union(9, 2);
 		sut.union(9, 4);
@@ -51,13 +51,13 @@ describe('union-find', () => {
 		sut.union(5, 3);
 		expect(sut.find(0)).to.equal(0);
 		expect(sut.find(1)).to.equal(1);
-		expect(sut.find(2)).to.equal(6);
-		expect(sut.find(3)).to.equal(6);
-		expect(sut.find(4)).to.equal(6);
-		expect(sut.find(5)).to.equal(6);
-		expect(sut.find(6)).to.equal(6);
+		expect(sut.find(2)).to.equal(9);
+		expect(sut.find(3)).to.equal(9);
+		expect(sut.find(4)).to.equal(9);
+		expect(sut.find(5)).to.equal(9);
+		expect(sut.find(6)).to.equal(9);
 		expect(sut.find(7)).to.equal(7);
 		expect(sut.find(8)).to.equal(8);
-		expect(sut.find(9)).to.equal(6);
+		expect(sut.find(9)).to.equal(9);
 	});
 });

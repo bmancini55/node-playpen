@@ -10,11 +10,9 @@ class UnionFind {
 	 */
 	constructor(n) {
 		this.ids = [];
-		this.sizes = [];
 
 		for (let i = 0; i < n; i++) {
 			this.ids[i] = i;
-			this.sizes[i] = 1;
 		}
 	}
 
