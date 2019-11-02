@@ -23,15 +23,10 @@ class UnionFind {
 	 * @param {*} index
 	 */
 	find(index) {
-		let curIdx = index;
-		let curId = this.ids[index];
-
-		while (curId !== curIdx) {
-			curIdx = curId;
-			curId = this.ids[curIdx];
+		while (index !== this.ids[index]) {
+			index = this.ids[index];
 		}
-
-		return curId;
+		return index;
 	}
 
 	/**
@@ -40,13 +35,10 @@ class UnionFind {
 	 * @param {number} a
 	 * @param {number} b
 	 */
-
 	union(a, b) {
-		let aIdx = this.find(a);
-		let bIdx = this.find(b);
-
-		// relink b into a;
-		this.ids[bIdx] = aIdx;
+		let i = this.find(a);
+		let j = this.find(b);
+		this.ids[j] = i;
 	}
 }
 
