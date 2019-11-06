@@ -63,7 +63,7 @@ class MinHeap {
 		if (lv <= rv && lv < iv) {
 			this._swap(i, li);
 			this._bubbleDown(li);
-		} else if (rv <= li && rv < iv) {
+		} else if (rv <= lv && rv < iv) {
 			this._swap(i, ri);
 			this._bubbleDown(ri);
 		}
@@ -123,6 +123,7 @@ module.exports.Node = Node;
 function huffmanTree(vals) {
 	let nodes = vals.map(val => new Node(val[0], val[1]));
 	let heap = new MinHeap(p => p && p.freq);
+
 	for (let node of nodes) {
 		heap.insert(node);
 	}
@@ -130,7 +131,6 @@ function huffmanTree(vals) {
 	while (heap.size > 1) {
 		let a = heap.extractMin();
 		let b = heap.extractMin();
-
 		let c = new Node(null, a.freq + b.freq);
 		c.left = a;
 		c.right = b;

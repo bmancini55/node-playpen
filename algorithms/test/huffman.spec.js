@@ -25,6 +25,27 @@ describe('MinHeap', () => {
 		expect(sut.extractMin()).to.include({ key: 4 });
 		expect(sut.extractMin()).to.include({ key: 5 });
 	});
+	it('extractMin', () => {
+		let sut = new MinHeap(p => p && p.key);
+		sut.insert({ key: 74 });
+		sut.insert({ key: 46 });
+		sut.insert({ key: 25 });
+		sut.insert({ key: 48 });
+		sut.insert({ key: 13 });
+		sut.insert({ key: 37 });
+		sut.insert({ key: 97 });
+		sut.insert({ key: 77 });
+		sut.insert({ key: 45 });
+		sut.insert({ key: 96 });
+
+		expect(sut.extractMin()).to.include({ key: 13 });
+		expect(sut.extractMin()).to.include({ key: 25 });
+
+		sut.insert({ key: 38 });
+
+		expect(sut.extractMin()).to.include({ key: 37 });
+		expect(sut.extractMin()).to.include({ key: 38 });
+	});
 });
 
 describe('huffman', () => {
@@ -40,11 +61,11 @@ describe('huffman', () => {
 		let vals = [['a', 3], ['b', 2], ['c', 6], ['d', 8], ['e', 2], ['f', 6]];
 		let tree = huffmanTree(vals);
 		let codes = huffmanCodes(tree);
-		expect(codes.get('a')).to.equal('010');
-		expect(codes.get('b')).to.equal('0111');
-		expect(codes.get('c')).to.equal('10');
+		expect(codes.get('c')).to.equal('00');
+		expect(codes.get('f')).to.equal('01');
+		expect(codes.get('a')).to.equal('100');
+		expect(codes.get('e')).to.equal('1010');
+		expect(codes.get('b')).to.equal('1011');
 		expect(codes.get('d')).to.equal('11');
-		expect(codes.get('e')).to.equal('0110');
-		expect(codes.get('f')).to.equal('00');
 	});
 });
