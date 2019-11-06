@@ -2,8 +2,9 @@ class MinHeap {
 	/**
 	 * Constructs a minimum heap
 	 */
-	constructor() {
+	constructor(keyFn) {
 		this.a = [];
+		this.keyFn = keyFn;
 	}
 
 	/**
@@ -11,8 +12,8 @@ class MinHeap {
 	 * the heap property.
 	 * @param {number} key
 	 */
-	insert(key) {
-		this.a.push(key);
+	insert(obj) {
+		this.a.push(obj);
 		this._bubbleUp(this.a.length - 1);
 	}
 
@@ -23,6 +24,13 @@ class MinHeap {
 	 */
 	get min() {
 		return this.a[0];
+	}
+
+	/**
+	 * @type {number}
+	 */
+	get size() {
+		return this.a.length;
 	}
 
 	/**
@@ -38,19 +46,19 @@ class MinHeap {
 
 	_bubbleUp(i) {
 		if (i === 0) return;
-		let parent = this._parent(i);
-		if (this.a[i] > this.a[parent]) return;
+		let parent = this._parentIndex(i);
+		if (this.keyFn(this.a[i]) > this.keyFn(this.a[parent])) return;
 		this._swap(i, parent);
 		this._bubbleUp(parent);
 	}
 
 	_bubbleDown(i) {
-		let li = this._leftChild(i);
-		let ri = this._rightChild(i);
+		let li = this._leftChildIndex(i);
+		let ri = this._rightChildIndex(i);
 
-		let iv = this.a[i];
-		let lv = this.a[li] || Number.MAX_SAFE_INTEGER;
-		let rv = this.a[ri] || Number.MAX_SAFE_INTEGER;
+		let iv = this.keyFn(this.a[i]);
+		let lv = this.keyFn(this.a[li]) || Number.MAX_SAFE_INTEGER;
+		let rv = this.keyFn(this.a[ri]) || Number.MAX_SAFE_INTEGER;
 
 		if (lv <= rv && lv < iv) {
 			this._swap(i, li);
@@ -67,7 +75,7 @@ class MinHeap {
 	 * @param {number} i
 	 * @returns {number}
 	 */
-	_parent(i) {
+	_parentIndex(i) {
 		return Math.floor((i - 1) / 2);
 	}
 
@@ -76,7 +84,7 @@ class MinHeap {
 	 * @param {number} i
 	 * @returns {number}
 	 */
-	_leftChild(i) {
+	_leftChildIndex(i) {
 		return i * 2 + 1;
 	}
 
@@ -85,7 +93,7 @@ class MinHeap {
 	 * @param {number} i
 	 * @returns {number}
 	 */
-	_rightChild(i) {
+	_rightChildIndex(i) {
 		return i * 2 + 2;
 	}
 
@@ -101,3 +109,53 @@ class MinHeap {
 	}
 }
 module.exports.MinHeap = MinHeap;
+
+class Node {
+	constructor(key, freq) {
+		this.left = null;
+		this.right = null;
+		this.key = key;
+		this.freq = freq;
+	}
+}
+module.exports.Node = Node;
+
+function huffmanTree(vals) {
+	let nodes = vals.map(val => new Node(val[0], val[1]));
+	let heap = new MinHeap(p => p && p.freq);
+	for (let node of nodes) {
+		heap.insert(node);
+	}
+
+	while (heap.size > 1) {
+		let a = heap.extractMin();
+		let b = heap.extractMin();
+
+		let c = new Node(null, a.freq + b.freq);
+		c.left = a;
+		c.right = b;
+		heap.insert(c);
+	}
+
+	return heap.extractMin();
+}
+
+function huffmanCodes(tree) {
+	let codes = new Map();
+	function crawl(node, path) {
+		if (!node.left || !node.right) {
+			codes.set(node.key, path);
+		}
+		if (node.left) {
+			crawl(node.left, path + '0');
+		}
+		if (node.right) {
+			crawl(node.right, path + '1');
+		}
+	}
+	crawl(tree, '');
+	return codes;
+}
+
+module.exports.huffmanTree = huffmanTree;
+module.exports.huffmanCodes = huffmanCodes;
