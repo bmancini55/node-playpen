@@ -18,4 +18,6 @@ const [size, itemCnt] = data[0];
 const items = data.slice(1);
 
 console.log('size', size, 'items', itemCnt);
+console.time();
 console.log('value', knapsack(items, size));
+console.timeEnd();
