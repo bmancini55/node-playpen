@@ -3,7 +3,12 @@ module.exports = {
 };
 
 /**
+ * Floyd-Warshall dynamic programming aglorithm solves the All-Pairs Shorts Path problem.
  *
+ * This algorithm takes space complexity of O(n^3) and time complexity of O().
+ *
+ * The input for this function is an a directed graph represented as an adjacency matrix
+ * It is constructred with the minimum weight edge between the two verties u,v.
  * @param {number[][]} g
  */
 function floydWarshall(g) {
