@@ -2,12 +2,12 @@ const fs = require('fs');
 
 // const input = './input/tsp_2.txt'; // 5
 // const input = './input/tsp_3.txt'; // 2
-// const input = './input/tsp_4.txt'; // 25 - https://github.com/beaunus/stanford-algs/blob/master/testCases/course4/assignment2TSP/output_int_12_4.txt
+const input = './input/tsp_4.txt'; // 25 - https://github.com/beaunus/stanford-algs/blob/master/testCases/course4/assignment2TSP/output_int_12_4.txt
 // const input = './input/tsp_6.txt'; // 12
 // const input = './input/tsp_11.txt'; // 414
 // const input = './input/tsp_16.txt'; // 56
 // const input = './input/tsp_20.txt'; // 78
-const input = './input/tsp.txt'; //
+// const input = './input/tsp.txt'; // 26442 in 58.22m
 
 const raw = fs.readFileSync(input, 'utf8');
 const rows = raw.split('\n').filter(p => p);
@@ -49,6 +49,7 @@ function setKey(s) {
 function bitmask(set) {
 	let r = 0;
 	for (let s of set) r |= 1 << s;
+	return r;
 }
 
 /// COURSE VERSION
@@ -56,31 +57,50 @@ function bitmask(set) {
 function tsp(g) {
 	const n = g.length;
 
-	const sets = combinations(n);
+	// const sets = combinations(n);
+	// console.log(`sets=${sets.length}`);
 
-	let a = new Map();
-	for (let i = 0; i < sets.length; i++) {
-		let ai = new Array(n).fill(0);
-		ai[0] = i == 0 ? 0 : Number.POSITIVE_INFINITY;
-		a.set(setKey(sets[i]), ai);
+	// let a = [];
+	// for (let i = 0; i < sets.length; i++) {
+	// 	let ai = new Array(n).fill(0);
+	// 	ai[0] = i == 0 ? 0 : Number.POSITIVE_INFINITY;
+	// 	a[bitmask(sets[i])] = ai;
+	// }
+
+	let a = [];
+
+	let S = nchooser(n, 1);
+	for (let s of S) {
+		let ai = new Array(n);
+		let bm = bitmask(s);
+		ai[0] = bm == 1 ? 0 : Number.POSITIVE_INFINITY;
+		a[bm] = ai;
 	}
 
 	for (let m = 2; m <= n; m++) {
-		let S = sets.filter(p => p.length == m);
+		console.log(`subproblem=${m}`);
+
+		let S = nchooser(n, m);
+		for (let s of S) {
+			let ai = new Array(n);
+			ai[0] = Number.POSITIVE_INFINITY;
+			a[bitmask(s)] = ai;
+		}
+
+		// let S = sets.filter(p => p.length == m);
 
 		for (let s of S) {
-			let skey = setKey(s);
+			let smask = bitmask(s);
 
 			for (let j of s) {
 				if (j == 0) continue;
 
-				let sj = removeFromSet(s, j);
-				let sjkey = setKey(sj);
+				let sjmask = smask ^ (1 << j);
 
 				let min = Number.POSITIVE_INFINITY;
 				for (let k of s) {
 					if (k == j) continue;
-					let priorVal = a.get(sjkey)[k];
+					let priorVal = a[sjmask][k];
 					let curVal = g[k][j];
 					if (priorVal + curVal < min) min = priorVal + curVal;
 				}
@@ -92,12 +112,15 @@ function tsp(g) {
 				// 	`min=${min}`
 				// );
 
-				a.get(skey)[j] = min;
+				a[smask][j] = min;
 			}
 		}
 	}
 
-	let lastSet = a.get(setKey(sets[sets.length - 1]));
+	let set = [];
+	for (let i = 0; i < n; i++) set.push(i);
+
+	let lastSet = a[bitmask(set)];
 	let min = Number.POSITIVE_INFINITY;
 	for (let k = 1; k < n; k++) {
 		if (lastSet[k] < min) {
@@ -188,6 +211,24 @@ function combinations(n) {
 		}
 	}
 	return sets;
+}
+
+function nchooser(n, r) {
+	let last = [[]];
+	let lasti = new Array(n).fill(0);
+	for (let l = 1; l <= r; l++) {
+		let cur = [];
+		let curi = [];
+		for (let i = 0; i < n; i++) {
+			for (let j = lasti[i], ll = last.length; j < ll; j++) {
+				cur.push([i, ...last[j]]);
+				curi[i] = cur.length;
+			}
+		}
+		last = cur;
+		lasti = curi;
+	}
+	return last;
 }
 
 console.time();
