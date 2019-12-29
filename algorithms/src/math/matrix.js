@@ -1,8 +1,10 @@
 const bint = require('bignumber.js');
 
 module.exports = {
+	identity,
 	scalar,
 	dot,
+	exp,
 };
 
 /**
@@ -46,11 +48,22 @@ function dot(a, b) {
 	return result;
 }
 
-// function exp(m, n) {
-// 	if (n.lt(0)) return exp(1 / , -n);
-// 	if (n.eq(0)) return new BigNumber(1);
-// 	if (n.eq(1)) return m;
-// 	if (n.mod(2).eq(0)) return expBySquaring(x.times(x), n.div(2));
-// 	if (n.mod(2).eq(1))
-// 		return x.times(expBySquaring(x.times(x), n.minus(1).div(2)));
-// }
+function identity(m) {
+	let n = Math.max(m.length, m[0].length);
+	let r = new Array(n);
+	for (let i = 0; i < n; i++) {
+		r[i] = new Array(n);
+		for (let j = 0; j < n; j++) {
+			r[i][j] = i == j ? bint(1) : bint(0);
+		}
+	}
+	return r;
+}
+
+function exp(m, n) {
+	// if (n.lt(0)) return exp(1 / x, -n); >>> need to figure this out...
+	if (n.eq(0)) return identity(m);
+	if (n.eq(1)) return m;
+	if (n.mod(2).eq(0)) return exp(dot(m, m), n.div(2));
+	if (n.mod(2).eq(1)) return dot(m, exp(dot(m, m), n.minus(1).div(2)));
+}
