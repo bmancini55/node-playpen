@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-	"test": "mocha"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "Brian Mancini <bmancini@gmail.com>",
@@ -15,5 +15,8 @@
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
     "sinon": "^7.3.2"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.0"
   }
 }
