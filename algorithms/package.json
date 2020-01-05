@@ -17,6 +17,8 @@
     "sinon": "^7.3.2"
   },
   "dependencies": {
-    "bignumber.js": "^9.0.0"
+    "bignumber.js": "^9.0.0",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.4"
   }
 }
