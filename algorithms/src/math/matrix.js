@@ -1,5 +1,3 @@
-const bint = require('bignumber.js');
-
 module.exports = {
 	identity,
 	scalar,
@@ -9,13 +7,13 @@ module.exports = {
 
 /**
  * Performs an in-place scalar multiplication on a matrix.
- * @param {BigNumber[][]} a
- * @param {BigNumber} s
+ * @param {bigint[][]} a
+ * @param {bigint} s
  */
 function scalar(a, s) {
 	for (let i = 0; i < a.length; i++) {
 		for (let j = 0; j < a[i].length; j++) {
-			a[i][j] = a[i][j].times(s);
+			a[i][j] = a[i][j] * s;
 		}
 	}
 	return a;
@@ -24,8 +22,8 @@ function scalar(a, s) {
 /**
  * Performs a shitty and naive dot-product multiplication of two matrices.
  * MxN * NxP -> MxP
- * @param {BigNumber[][]} a
- * @param {BigNumber[][]} b
+ * @param {bigint[][]} a
+ * @param {bigint[][]} b
  */
 function dot(a, b) {
 	if (a[0].length !== b.length) throw new Error('Invalid matrices');
@@ -38,9 +36,9 @@ function dot(a, b) {
 	for (let i = 0; i < m; i++) {
 		result[i] = new Array(p);
 		for (let j = 0; j < p; j++) {
-			result[i][j] = bint(0);
+			result[i][j] = 0n;
 			for (let k = 0; k < n; k++) {
-				result[i][j] = result[i][j].plus(a[i][k].times(b[k][j]));
+				result[i][j] = result[i][j] + a[i][k] * b[k][j];
 			}
 		}
 	}
@@ -54,7 +52,7 @@ function identity(m) {
 	for (let i = 0; i < n; i++) {
 		r[i] = new Array(n);
 		for (let j = 0; j < n; j++) {
-			r[i][j] = i == j ? bint(1) : bint(0);
+			r[i][j] = i == j ? BigInt(1) : BigInt(0);
 		}
 	}
 	return r;
@@ -63,8 +61,8 @@ function identity(m) {
 function exp(m, n) {
 	// if (n.lt(0)) return exp(1 / x, -n); >>> need to figure this out...
 	// console.log(n.toString());
-	if (n.eq(0)) return identity(m);
-	if (n.eq(1)) return m;
-	if (n.mod(2).eq(0)) return exp(dot(m, m), n.div(2));
-	if (n.mod(2).eq(1)) return dot(m, exp(dot(m, m), n.minus(1).div(2)));
+	if (n === 0n) return identity(m);
+	if (n === 1n) return m;
+	if (n % 2n === 0n) return exp(dot(m, m), n / 2n);
+	if (n % 2n === 1n) return dot(m, exp(dot(m, m), (n - 1n) / 2n));
 }
