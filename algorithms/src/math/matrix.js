@@ -62,6 +62,7 @@ function identity(m) {
 
 function exp(m, n) {
 	// if (n.lt(0)) return exp(1 / x, -n); >>> need to figure this out...
+	// console.log(n.toString());
 	if (n.eq(0)) return identity(m);
 	if (n.eq(1)) return m;
 	if (n.mod(2).eq(0)) return exp(dot(m, m), n.div(2));
