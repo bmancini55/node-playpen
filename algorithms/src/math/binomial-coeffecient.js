@@ -1,4 +1,4 @@
-function nchoose_iter(n, r) {
+function combinations(n, r) {
 	let levels = [
 		[], // level 0
 	];
@@ -15,8 +15,13 @@ function nchoose_iter(n, r) {
 			}
 		}
 	}
+	// return levels.reduce((a, l) => [...a, ...l], []); // flattens
 	return levels;
 }
+// let r = nchoose_iter(5, 5);
+// console.log(r);
+// console.log(r.length);
+
 // console.time();
 // nchoose_iter(20, 20);
 // console.timeEnd();
@@ -59,10 +64,10 @@ function nchoose_iter3(n, r) {
 }
 console.time();
 // console.log(nchoose_iter3(4, 4));
-nchoose_iter3(20, 20);
+nchoose_iter3(25, 25);
 console.timeEnd();
 
-function run(n) {
+function combinations2(n) {
 	let sets = [];
 
 	for (let x = 0; x < n; x++) {
@@ -73,9 +78,16 @@ function run(n) {
 	}
 	return sets;
 }
-console.time();
-run(20);
-console.timeEnd();
+// console.time();
+// console.log(combinations(4));
+// console.timeEnd();
+
+// [0] [0,1] [0,1,2] [0,1,2,3]
+// [1] [0,2] [0,1,3]
+// [2] [0,3] [0,2,3]
+// [3] [1,2] [1,2,3]
+//     [1,3]
+//     [2,3]
 
 /////////////////////
 
