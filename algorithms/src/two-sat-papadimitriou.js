@@ -66,7 +66,7 @@ function twoSatPapadimitriou(n, clauses) {
 
 			if (!badClause) {
 				// we didn't have a bad clause we succeeded!!!
-				return assignments;
+				return true;
 			} else {
 				// we had a bad clause, so we need to randomly (uniformly)
 				// select one of the variables and flip its value
@@ -77,7 +77,7 @@ function twoSatPapadimitriou(n, clauses) {
 			}
 		}
 	}
-	return [];
+	return false;
 }
 
 /**
@@ -110,7 +110,7 @@ function testClause(assignments, clause) {
 function genAssignmentRandom(n) {
 	const results = [];
 	for (let i = 1; i <= n; i++) {
-		results[i] = Math.floor(Math.random() * 2);
+		results[i] = coinFlip();
 	}
 	return results;
 }
