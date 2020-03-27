@@ -95,7 +95,7 @@ class JsonSocket extends Duplex {
 
       // ensure that we don't exceed the max size of 256KiB
       if (len > 2 ** 18) {
-        this.socket.destroy(new Error('Max length exceeded'));
+        this._socket.destroy(new Error('Max length exceeded'));
         return;
       }
 
@@ -115,7 +115,7 @@ class JsonSocket extends Duplex {
       try {
         json = JSON.parse(body);
       } catch (ex) {
-        this.socket.destroy(ex);
+        this._socket.destroy(ex);
         return;
       }
 
