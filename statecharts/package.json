@@ -10,7 +10,7 @@
   "author": "Brian Mancini <bmancini@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "node-fetch": "^2.1.2",
+    "node-fetch": "^2.6.1",
     "xstate": "^3.1.1"
   }
 }
