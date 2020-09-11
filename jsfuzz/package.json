@@ -1,0 +1,16 @@
+{
+  "name": "jsfuzz-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fuzz": "jsfuzz ./test.js corpus"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsfuzz": "^1.0.14"
+  }
+}
